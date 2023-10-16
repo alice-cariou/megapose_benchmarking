@@ -6,6 +6,7 @@ from optitrack_ros.msg import or_pose_estimator_state
 
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
+import yaml
 
 bridge = CvBridge()
 obj_pos = []
@@ -20,6 +21,10 @@ class Subscriber_tless:
         if data.pos != []:
             self.sub1.unregister()
             obj_pos = data.pos
+            print(data.pos)
+            #test = {'mocap': {'robotpos': {'pos': {'x': data.pos.x,'y': data.pos.y,'z' : data.pos.z},'att':{'x':'f'}}}}
+            #with open('test.yaml', 'w') as f:
+            #    data = yaml.dump(test, f, sort_keys=False, default_flow_style=False)
             #store data in yaml in new dir
 
 class Subscriber_tiago:
@@ -33,6 +38,7 @@ class Subscriber_tiago:
         rospy.loginfo("I heard %s",data)
         if data.pos != []:
             self.sub1.unregister()
+            print(data)
             #store data in yaml
 
     def callback_image(self, data):
