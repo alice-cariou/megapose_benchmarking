@@ -1,0 +1,2 @@
+rosrun image_view image_saver image:=/image_publisher_1700123085269733350/image_raw _save_all_image:=false _filename_format:=truc.png __name:=image_server
+rosservice call /image_server/save
