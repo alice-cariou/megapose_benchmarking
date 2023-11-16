@@ -18,8 +18,10 @@ bridge = CvBridge()
 class Subscriber_tiago:
     def __init__(self, name):
         rospy.init_node(name)
-        self.sub1 = rospy.Subscriber("/optitrack/bodies/tiago_base", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
+        print(0)
         self.sub2 = rospy.Subscriber("/xtion/rgb/images_raw", Image, lambda data: self.callback_image(data))
+        #self.sub1 = rospy.Subscriber("/optitrack/bodies/tiago_base", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
+
 
     def callback_pos_tiago(self, data):
         rospy.loginfo("I heard %s",data)
@@ -40,7 +42,7 @@ class Subscriber_tiago:
 
 def listener():
     sub = Subscriber_tiago("tiago_infos")
-	rospy.spin()
+    rospy.spin()
 
 def main():
     listener()

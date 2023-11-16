@@ -1,0 +1,2 @@
+cam : xtion_rgb_optical_frame
+base : torso_fixed_column_link
