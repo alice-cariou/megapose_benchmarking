@@ -3,6 +3,11 @@ import sys
 from pathlib import Path
 import shutil
 
+import logging
+logging.basicConfig()
+logger = logging.getLogger('create_megapose_example')
+logger.setLevel(logging.INFO)
+
 #infos importantes:
 #ca fonctionne par sous dossier : un dossier principal, sous dossiers dedans avec des exemples
 #possibilite de recuperer tout le dosssier ou non
@@ -29,29 +34,8 @@ import shutil
 #aller chercher les meshs correspondant aux labels et les mettre dedans
 #creer le fichier de camera avec les donnees que l'on a
 #creer le fichier d'input en recuperant les labels et les bbox
-
-def main():   
-    args = sys.argv
-    if len(args) < 2:
-        print("missing argument")
-        return
-    print(args[1])
-
-    datadir = os.environ.get('MEGAPOSE_DATA_DIR')
-    if datadir == None:
-        print("you need to set your MEGAPOSE_DATA_DIR environment variable")
-        return
-
-    #subdirectory ex: tiago/001
-    if args[1].find("/"):
-        print("OH")
-
-    #whole directory ex: tiago
-    if os.path.exists("./"+args[1]):
-        print("ok "+args[1])
-        get_subdir(datadir+"/examples/"+args[1].split("/")[-1], "./"+args[1])
-
 #camera ?
+
 def get_subdir(expath, frompath):
     #create nexessary dirs
     Path(expath).mkdir(parents=True,exist_ok=True)
@@ -80,6 +64,28 @@ def get_subdir(expath, frompath):
 
 def get_dir():
     return
+
+def main():
+    args = sys.argv
+    if len(args) < 2:
+        logger.error('missing argument')
+        return
+    ex_list = args[1:]
+    return
+
+    datadir = os.environ.get('MEGAPOSE_DATA_DIR')
+    if datadir == None:
+        print("you need to set your MEGAPOSE_DATA_DIR environment variable")
+        return
+
+    #subdirectory ex: tiago/001
+    if args[1].find("/"):
+        print("OH")
+
+    #whole directory ex: tiago
+    if os.path.exists("./"+args[1]):
+        print("ok "+args[1])
+        get_subdir(datadir+"/examples/"+args[1].split("/")[-1], "./"+args[1])
 
 if __name__ == '__main__':
     main()
