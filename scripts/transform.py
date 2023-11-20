@@ -92,7 +92,7 @@ def get_obj_pos(ex_dir, name, pos, quat):
     infos = {'mocap': {'quaternion': {'qw': qw, 'qx': qx, 'qy': qy, 'qz': 'qz'}, 'pos': {'x': x, 'y': y, 'z': z}}}
     yfile = exdir + f'/{name}.yaml'
 
-    if os.path.exists(yaml):
+    if os.path.exists(yfile):
         with open(yfile, 'r') as f:
             data = yaml.safe_load(f)
             if data['mocap']:
