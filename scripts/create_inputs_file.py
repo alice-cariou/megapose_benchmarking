@@ -3,6 +3,9 @@
 import os
 import argparse
 
+def create_inputs_file():
+    
+
 def main():
     parser = argparse.ArgumentParser('Get megapose results')
     parser.add_argument('--name', type=str, help="name of the example dir")

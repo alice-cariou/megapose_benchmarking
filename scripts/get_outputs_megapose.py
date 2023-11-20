@@ -7,7 +7,7 @@ import yaml
 from ast import literal_eval
 
 logging.basicConfig()
-logger = logging.getLogger('get_megapose')
+logger = logging.getLogger('get_outputs_megapose')
 logger.setLevel(logging.INFO)
 
 def get_megapose_outputs(ex_name):
