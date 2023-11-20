@@ -21,7 +21,10 @@ def yaml_manager(ex_name, key_name, filename, content):
                 if cmd not in ('y','yes'):
                     logger.info("aborting")
                     return
+            data.update(content)
     with open(f'{yml_path}+/details.yaml', 'w') as f:
-        data = yaml.dump(content, f, default_flow_style=False)
+        if not data:
+            data = content
+        yaml.safe_dump(data, f, default_flow_style=False)
     
     logger.info(f'wrote results in tiago/{ex_name}/{filename}')

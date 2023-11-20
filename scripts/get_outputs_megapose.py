@@ -39,27 +39,8 @@ def get_megapose_outputs(ex_name):
         logger.error('Make sure the example you asked for exists in the tiago directory')
         return
 
-    test = {'megapose': {'quaternion': {'qw?' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
-    utils.yaml_manager(f'{ex_name}.yaml')
-    ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}/{ex_name}.yaml'
-    
-
-    with open(ex_dir, 'r') as f:
-        data = yaml.safe_load(f)
-        if 'megapose' in data.keys():
-            cmd = input("there are already megapose data in this yaml file. Do you wish to override them ? y/n ")
-            cmd.lower()
-            if cmd not in ('y','yes'):
-                logger.info("aborting")
-                return
-
-        data.update(test)
-    if not data:
-        logger.error('Error while reading yml file')
-        return
-    with open(ex_dir, 'w') as f:
-        yaml.safe_dump(data, f, sort_keys=False, default_flow_style=False)
-    logger.info('Done')
+    content = {'megapose': {'quaternion': {'qw?' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
+    utils.yaml_manager(ex_name, 'megapose', f'{ex_name}.yaml', content)
 
 def main():
     parser = argparse.ArgumentParser('Get megapose results')
