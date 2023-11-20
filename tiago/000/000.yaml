@@ -1,19 +1,13 @@
 mocap:
-  robot_pos:
-    pos:
-      x: 1.52
-      y: 12
-      z: 0.89
-    att:
-      qw: -0.3
-      qx: -0.3
-      qy: -0.6
-      qz: 0
-  obj_pos:
-    pos:
-      x: 5
-      y: 1
-      z: 0
+  quaternion:
+    qw: -0.3
+    qx: -0.3
+    qy: -0.6
+    qz: 0
+  pos:
+    x: 5
+    y: 1
+    z: 0
 megapose:
   quaternion:
     x: -0.0629801600432587

@@ -34,7 +34,7 @@ def get_megapose_outputs(ex_name):
     res = literal_eval(res)
     two = res['TWO']
 
-    test = {'megapose': {'quaternion':{'x' : two[0][0], 'y' : two[0][1],'z' : two[0][2], 'w?' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
+    test = {'megapose': {'quaternion': {'qw?' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
     
     ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}/{ex_name}.yaml'
     if not os.path.exists(ex_dir):
