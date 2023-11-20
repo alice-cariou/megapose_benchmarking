@@ -34,12 +34,15 @@ def get_megapose_outputs(ex_name):
     res = literal_eval(res)
     two = res['TWO']
 
-    test = {'megapose': {'quaternion': {'qw?' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
-    
-    ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}/{ex_name}.yaml'
+    ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}'
     if not os.path.exists(ex_dir):
-        logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
+        logger.error('Make sure the example you asked for exists in the tiago directory')
         return
+
+    test = {'megapose': {'quaternion': {'qw?' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
+    utils.yaml_manager(f'{ex_name}.yaml')
+    ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}/{ex_name}.yaml'
+    
 
     with open(ex_dir, 'r') as f:
         data = yaml.safe_load(f)

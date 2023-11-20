@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import utils
+
 import rospy
 from sensor_msgs.msg import Image
 from optitrack_ros.msg import or_pose_estimator_state
@@ -30,22 +32,9 @@ class Subscriber_tiago:
 
             pos = data.pos[0]
             att = data.att[0]
-            test = {'base_robot': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'att':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
-            print(test)
-            yml_path = os.path.dirname(os.path.realpath(__file__))+'/../tiago/{self.ex_name}'
-            if not os.path.exists(yml_path):
-                os.makedirs(yml_path, exist_ok=True)
-            if os.path.exists(f'{yml_path}+/details.yaml'):
-                with open(f'{yml_path}+/details.yaml', 'r') as f:
-                    data = yaml.safe_load(f)
-                    if data['base_robot']:
-                        cmd = input("there are already objetct data in this yaml file. Do you wish to override them ? y/n ")
-                        cmd.lower()
-                        if cmd not in ('y','yes'):
-                            logger.info("aborting")
-                            return
-            with open(f'{yml_path}+/details.yaml', 'w') as f:
-                data = yaml.dump(test, f, default_flow_style=False)
+            content = {'base_robot': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
+            utils.yaml_manager(self.ex_name, 'base_robot', 'details.yaml', content)
+
 
     def callback_image(self, data):
         print("Received an image!")

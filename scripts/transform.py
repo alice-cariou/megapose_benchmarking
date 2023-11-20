@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import utils
+
 import os
 import yaml
 import numpy as np
@@ -89,23 +91,8 @@ def get_obj_pos(ex_dir, name, pos, quat):
 
     rotation_quaternion = np.array([rotation_quaternion[0], rotation_quaternion[1], rotation_quaternion[2], rotation_quaternion[3]])
 
-    infos = {'mocap': {'quaternion': {'qw': qw, 'qx': qx, 'qy': qy, 'qz': 'qz'}, 'pos': {'x': x, 'y': y, 'z': z}}}
-    yfile = exdir + f'/{name}.yaml'
-
-    if os.path.exists(yfile):
-        with open(yfile, 'r') as f:
-            data = yaml.safe_load(f)
-            if data['mocap']:
-                cmd = input("there are already mocap data in this yaml file. Do you wish to override them ? y/n ")
-                cmd.lower()
-                if cmd not in ('y','yes'):
-                    logger.info("aborting")
-                    return
-
-    with open(yfile, 'w') as f:
-        yaml.safe_dump(infos, f, sort_keys=False, default_flow_style=False)
-
-    logger.info('wrote results in tiago/<ex_name>/<ex_name>.yaml')
+    content = {'mocap': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
+    utils.yaml_manager(name, 'mocap', f'{name}.yaml', content)
 
     print("translation:", translation_vector)
     print("quaternion:", rotation_quaternion)
