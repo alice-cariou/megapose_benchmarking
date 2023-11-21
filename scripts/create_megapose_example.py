@@ -50,28 +50,37 @@ def get_dir(name):
     Path(expath + "/inputs").mkdir(exist_ok=True)
     Path(expath + "/meshes").mkdir(exist_ok=True)
 
-    #copy obj_data_file
-    shutil.copy(frompath+"/obj_data.json", expath+"/inputs/obj_data.json")
-
-    #get list of labels #read from obj_data
-    labels = ["tiago_01","tiago_00"]
-
-    #copy image
-    if not os.path.exists(frompath+"/image.png"):
-        print("where image?")
-        return
-    shutil.copy(frompath+"/image.png", expath+"/image.png") #TODO: *.png
-
     #create necessary files
     shutil.copy(frompath+"/../camera_data.json", expath+"/camera_data.json")
     shutil.copy(frompath+"/object_data.json", expath+"/inputs/object_data.json")
 
+
+    #get list of labels #read from obj_data
+    with open(frompath+"/object_data.json", 'r') as f:
+        res = f.read()
+    if not res :
+        logger.error(f'Error while reading {frompath}/obj_data.json')
+        return
+    res = res[1:-1]
+    res = literal_eval(res)
+    label = res['label']
+
+    Path(f"{expath}/meshes/{label}").mkdir(exist_ok=True)
+    meshpath = os.path.dirname(os.path.realpath(__file__))+'/../meshes'
+    shutil.copy(f'{meshpath}/{label}', f'{expath}/meshes/{label}.ply')
+
+    #copy image
+    if not os.path.exists(frompath+"/image_rgb.png"):
+        logger.error("missing image")
+        return
+    shutil.copy(frompath+"/image_rgb.png", expath+"/image_rgb.png")
+
     #import meshes
-    for l in labels:
-        dest = expath + "/meshes/"+l
-        meshpath = "./meshes/"+l+".truc" #TODO: l.*
-        Path(dest).mkdir(exist_ok=True)
-        shutil.copy(meshpath, dest)
+    #for l in labels:
+    #    dest = expath + "/meshes/"+l
+    #    meshpath = "./meshes/"+l+".truc" #TODO: l.*
+    #    Path(dest).mkdir(exist_ok=True)
+    #    shutil.copy(meshpath, dest)
 
 def main():
     parser = argparse.ArgumentParser('Get megapose results')
