@@ -8,6 +8,7 @@ from optitrack_ros.msg import or_pose_estimator_state
 
 import os
 import yaml
+import argparse
 
 import logging
 logging.basicConfig()
@@ -21,7 +22,7 @@ class Subscriber_tless:
         self.sub1 = rospy.Subscriber("/optitrack/bodies/plank_gepetto", or_pose_estimator_state, lambda data: self.callback_pos_wand(data))
 
     def callback_pos_wand(self, data):
-        #rospy.loginfo("I heard %s",data)
+        rospy.loginfo("I heard %s",data)
         if data.pos != []:
             self.sub1.unregister()
             pos = data.pos[0]

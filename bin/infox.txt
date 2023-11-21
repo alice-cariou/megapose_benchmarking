@@ -1,2 +1,2 @@
-cam : xtion_rgb_optical_frame
-base : torso_fixed_column_link
+cam : xtion_link
+base : torso_lift_link

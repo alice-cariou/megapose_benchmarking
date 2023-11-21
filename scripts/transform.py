@@ -61,7 +61,7 @@ def get_tf(ex_dir):
     return new_position, new_quaternion
 
 def get_obj_pos(ex_dir, name, pos, quat):
-    #pos après tf
+    #pos apres tf
     x1, y1, z1  = pos[0], pos[1], pos[2]
     qw1, qx1, qy1, qz1 = quat [0],  quat[1], quat[2],  quat[3]
 
@@ -95,7 +95,7 @@ def get_obj_pos(ex_dir, name, pos, quat):
 
     content = {'mocap': {'quaternion': {'qw':int(rotation_quaternion[0]),'qx':int(rotation_quaternion[1]),'qy':int(rotation_quaternion[2]),'qz':int(rotation_quaternion[3])}, 'pos': {'x':int(translation_vector[0]),'y':int(translation_vector[1]),'z':int(translation_vector[2])}}}
 
-    utils.yaml_manager(name, 'mocap', f'{name}.yaml', content)
+    utils.yaml_manager(name, 'mocap', name+'.yaml', content)
 
 def main():
     parser = argparse.ArgumentParser('Transformations')
@@ -107,7 +107,7 @@ def main():
         logger.error('Please provide an example name : --name <example_name>')
         return
 
-    ex_dir = f'{os.path.dirname(__file__)}/../tiago/{args.name}'
+    ex_dir = os.path.dirname(__file__)+'/../tiago/'+args.name
 
     pos, quat = get_tf(ex_dir)
     get_obj_pos(ex_dir, args.name, pos, quat)
