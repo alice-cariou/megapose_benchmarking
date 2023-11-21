@@ -12,6 +12,7 @@ def yaml_manager(ex_name, key_name, filename, content):
     yml_path = os.path.dirname(os.path.realpath(__file__))+f'/../tiago/{ex_name}'
     if not os.path.exists(yml_path):
         os.makedirs(yml_path, exist_ok=True)
+    data = {}
     if os.path.exists(f'{yml_path}/{filename}'):
         with open(f'{yml_path}/{filename}', 'r') as f:
             data = yaml.safe_load(f)
@@ -22,7 +23,7 @@ def yaml_manager(ex_name, key_name, filename, content):
                     logger.info("aborting")
                     return
             data.update(content)
-    with open(f'{yml_path}+/details.yaml', 'w') as f:
+    with open(f'{yml_path}/{filename}', 'w') as f:
         if not data:
             data = content
         yaml.safe_dump(data, f, default_flow_style=False)

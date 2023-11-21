@@ -2,6 +2,7 @@ import os
 import sys
 from pathlib import Path
 import shutil
+import argparse
 
 import logging
 logging.basicConfig()
@@ -36,13 +37,23 @@ logger.setLevel(logging.INFO)
 #creer le fichier d'input en recuperant les labels et les bbox
 #camera ?
 
-def get_subdir(expath, frompath):
+def get_dir(name):
     #create nexessary dirs
+    frompath = os.path.dirname(os.path.realpath(__file__))+f'/../tiago/{name}'
+    datadir = os.environ.get('MEGAPOSE_DATA_DIR')
+    if datadir == None:
+        print("you need to set your MEGAPOSE_DATA_DIR environment variable")
+        return
+
+    expath = datadir + '/examples'
     Path(expath).mkdir(parents=True,exist_ok=True)
     Path(expath + "/inputs").mkdir(exist_ok=True)
     Path(expath + "/meshes").mkdir(exist_ok=True)
 
-    #get list of labels
+    #copy obj_data_file
+    shutil.copy(frompath+"/obj_data.json", expath+"/inputs/obj_data.json")
+
+    #get list of labels #read from obj_data
     labels = ["tiago_01","tiago_00"]
 
     #copy image
@@ -62,30 +73,17 @@ def get_subdir(expath, frompath):
         Path(dest).mkdir(exist_ok=True)
         shutil.copy(meshpath, dest)
 
-def get_dir():
-    return
-
 def main():
-    args = sys.argv
-    if len(args) < 2:
-        logger.error('missing argument')
+    parser = argparse.ArgumentParser('Get megapose results')
+    parser.add_argument('--name', type=str)
+
+    args = parser.parse_args()
+
+    if not args.name:
+        logger.error('Please provide an example name : --name <example_name>')
         return
-    ex_list = args[1:]
-    return
-
-    datadir = os.environ.get('MEGAPOSE_DATA_DIR')
-    if datadir == None:
-        print("you need to set your MEGAPOSE_DATA_DIR environment variable")
-        return
-
-    #subdirectory ex: tiago/001
-    if args[1].find("/"):
-        print("OH")
-
-    #whole directory ex: tiago
-    if os.path.exists("./"+args[1]):
-        print("ok "+args[1])
-        get_subdir(datadir+"/examples/"+args[1].split("/")[-1], "./"+args[1])
+    
+    get_dir(args.name)
 
 if __name__ == '__main__':
     main()

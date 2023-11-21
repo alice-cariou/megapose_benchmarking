@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import utils
+
 import os
 import argparse
 import logging
@@ -36,10 +38,11 @@ def get_megapose_outputs(ex_name):
 
     ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}'
     if not os.path.exists(ex_dir):
-        logger.error('Make sure the example you asked for exists in the tiago directory')
-        return
+        os.makedirs(ex_dir, exist_ok=True)
+        #logger.error('Make sure the example you asked for exists in the tiago directory')
+        #return
 
-    content = {'megapose': {'quaternion': {'qw?' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
+    content = {'megapose': {'quaternion': {'qw' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
     utils.yaml_manager(ex_name, 'megapose', f'{ex_name}.yaml', content)
 
 def main():

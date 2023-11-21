@@ -9,12 +9,14 @@ from scipy.spatial.transform import Rotation
 import transforms3d.quaternions as tf_quaternions
 import transforms3d.affines as tf_affines
 
+import argparse
+import logging
 logging.basicConfig()
 logger = logging.getLogger('tranform')
 logger.setLevel(logging.INFO)
 
 def get_tf(ex_dir):
-    yfile = exdir + '/details.yaml'
+    yfile = ex_dir + '/details.yaml'
     if not os.path.exists(ex_dir):
         logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
         return
@@ -64,7 +66,7 @@ def get_obj_pos(ex_dir, name, pos, quat):
     qw1, qx1, qy1, qz1 = quat [0],  quat[1], quat[2],  quat[3]
 
     #obj
-    yfile = exdir + '/details.yaml'
+    yfile = ex_dir + '/details.yaml'
     if not os.path.exists(ex_dir):
         logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
         return
@@ -91,11 +93,9 @@ def get_obj_pos(ex_dir, name, pos, quat):
 
     rotation_quaternion = np.array([rotation_quaternion[0], rotation_quaternion[1], rotation_quaternion[2], rotation_quaternion[3]])
 
-    content = {'mocap': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
-    utils.yaml_manager(name, 'mocap', f'{name}.yaml', content)
+    content = {'mocap': {'quaternion': {'qw':int(rotation_quaternion[0]),'qx':int(rotation_quaternion[1]),'qy':int(rotation_quaternion[2]),'qz':int(rotation_quaternion[3])}, 'pos': {'x':int(translation_vector[0]),'y':int(translation_vector[1]),'z':int(translation_vector[2])}}}
 
-    print("translation:", translation_vector)
-    print("quaternion:", rotation_quaternion)
+    utils.yaml_manager(name, 'mocap', f'{name}.yaml', content)
 
 def main():
     parser = argparse.ArgumentParser('Transformations')
