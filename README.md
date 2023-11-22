@@ -14,20 +14,28 @@ The following is about how to use the scripts.
 
 ## create a test using the mocap
 
-For a new test for megapose, you will need to get :
+### on optitrack
 
-The position of tiago, I used the position of torso_lift_link :  
-`./get_tiago.py --name <example_name>`
+If it is the first time you use optitrack, you might need to setup a few things [here](https://wiki.laas.fr/robots/PR2/Mocap)  
+Otherwise, you can already do :  
+`cd openrobots_ws`  
+`source setup-env.sh`
+`optitrack-ros -b`  
+`rosaction call /optitrack/connect '{host: "muybridge", host_port: "1510", mcast: "239.192.168.30", mcast_port: "1511"}'`
 
-The image :  
-`./test_image.py --name <example_name>`
+You can now get the position of tiago, (I used the position of torso_lift_link), and the position of the object (I used the plank_gepetto):  
+`./get_mocap.py --name <example_name>`
 
-The position of the object you want to detect with megapose :  
-`./get_tless.py --name <example_name>`  
-I used the `plank_gepetto` topic in this script, but feel free to modify this if you want to use something else to detect your objects.
+### on tiago
 
-The transformation between torso_lift_link and xtion_rgb_frame :  
-`./tf.py --name <example_name>`
+On a new terminal :
+`source setup_tiago.sh`
+
+You should now have access to the topics regarding tiago.  
+You can now get the image and the position of the camera with:  
+`./get_tiago_infos.py --name <example_name>`
+
+### afterwards
 
 You can now use the informations you gathered and transform them to have a position and rotation comparable to megapose outputs :  
 `./transform.py --name <example_name>`

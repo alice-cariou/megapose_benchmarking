@@ -20,13 +20,17 @@ def tf(ex_name):
     rospy.init_node('tf2_test_listener')
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
-    now = rospy.Time.now()
-    listener.waitForTransform('torso_lift_link', 'xtion_link', rospy.Time(), rospy.Duration(4.0))
-    (trans,rot) = listener.lookupTransform('torso_lift_link', 'xtion_link', now)
-    #trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_link', rospy.Time.now(), rospy.Duration(1.0))
-    print(trans)
+    #now = rospy.Time.now()
+    #if tfBuffer.can_transform('torso_lift_link', 'xtion_link', rospy.Time()):
+    #    print('yay')
+    #listener.waitForTransform('torso_lift_link', 'xtion_link', rospy.Time(), rospy.Duration(4.0))
+    #(trans,rot) = listener.lookupTransform('torso_lift_link', 'xtion_link', now)
+    trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_link', rospy.Time(), rospy.Duration(1.0))
+    print(trans.transform)
+    pos = trans.transform.translation
+    att = trans.transform.rotation
 
-    content = {'tf_camera': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
+    content = {'tf_camera': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.w,'qx': att.x,'qy': att.y,'qz': att.z}}}
     utils.yaml_manager(ex_name, 'tf_camera', 'details.yaml', content)
 
 
