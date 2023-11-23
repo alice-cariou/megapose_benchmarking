@@ -67,7 +67,7 @@ def get_dir(name):
 
     Path(f"{expath}/meshes/{label}").mkdir(exist_ok=True)
     meshpath = os.path.dirname(os.path.realpath(__file__))+'/../meshes'
-    shutil.copy(f'{meshpath}/{label}', f'{expath}/meshes/{label}.ply')
+    shutil.copy(f'{meshpath}/{label}', f'{expath}/meshes/{label}')
 
     #copy image
     if not os.path.exists(frompath+"/image_rgb.png"):

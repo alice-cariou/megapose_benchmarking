@@ -15,16 +15,16 @@ def main():
     args = parser.parse_args()
 
     content = '[{"label": "'+args.object+'", "bbox_modal": ['+args.x1+', '+args.y1+', '+args.x2+', '+args.y2+']}]\n' #TODO: manage a list of args for mroe than 1 obj
-    dir_name = os.path.dirname(os.path.realpath(__file__))+f'/../tiago/{args.name}'
+    dir_name = os.path.dirname(os.path.realpath(__file__))+'/../tiago/'+args.name
     if not os.path.exists(dir_name):
         os.makedirs(dir_name, exist_ok=True)
-    if os.path.exists(f'{dir_name}/obj_data.json'):
-        cmd = input(f"there are already data in this file. Do you wish to override it ? y/n ")
+    if os.path.exists(dir_name+'/obj_data.json'):
+        cmd = input("there is already data in this file. Do you wish to override it ? y/n ")
         cmd.lower()
         if cmd not in ('y','yes'):
             logger.info("aborting")
             return
-    with open(f'{dir_name}/obj_data.json', "w") as f:
+    with open(dir_name+"/obj_data.json", "w") as f:
         f.write(content)
 
 if __name__ == '__main__':
