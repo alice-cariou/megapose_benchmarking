@@ -14,8 +14,8 @@ def main():
 
     args = parser.parse_args()
 
-    content = '[{"label": "'+args.object+'", "bbox_modal": ['+args.x1+', '+args.y1+', '+args.x2+', '+args.y2+']}]\n' #TODO: manage a list of args for mroe than 1 obj
-    dir_name = os.path.dirname(os.path.realpath(__file__))+'/../tiago/'+args.name
+    content = '[{"label": "'+args.object+'", "bbox_modal": ['+args.x1+', '+args.y1+', '+args.x2+', '+args.y2+']}]\n'
+    dir_name = os.path.dirname(os.path.realpath(__file__))+'/../../tiago/'+args.name
     if not os.path.exists(dir_name):
         os.makedirs(dir_name, exist_ok=True)
     if os.path.exists(dir_name+'/object_data.json'):

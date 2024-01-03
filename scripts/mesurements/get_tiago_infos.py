@@ -15,10 +15,6 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 import numpy as np
 import sys
-import logging
-logging.basicConfig()
-logger = logging.getLogger('get_tless')
-logger.setLevel(logging.INFO)
 
 class Robot_Subscriber:
     def __init__(self, name, ex_name):
@@ -31,7 +27,7 @@ class Robot_Subscriber:
     def callback(self, image_msg):
         print("Subscribe images from topic /xtion/rgb/image_raw ...")
         cv_image = imgmsg_to_cv2(image_msg)
-        path=os.path.dirname(os.path.realpath(__file__))+'/../tiago/'+self.ex_name+'/image_rgb.png'
+        path=os.path.dirname(os.path.realpath(__file__))+'/../../tiago/'+self.ex_name+'/image_rgb.png'
         cv2.imwrite(path, cv_image)
         print("save image as "+path)
         self.sub.unregister()
@@ -46,7 +42,6 @@ def imgmsg_to_cv2(img_msg):
 
 
 def tf(ex_name):
-    #rospy.init_node('test_listener')
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
     trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_rgb_frame', rospy.Time(), rospy.Duration(1.0))
@@ -63,10 +58,10 @@ def main():
 
     args = parser.parse_args()
     if not args.name:
-        logger.error('Please provide an example name : --name <example_name>')
+        print('Please provide an example name : --name <example_name>')
         return
 
-    #tf(args.name)
+    tf(args.name)
 
     sub = Robot_Subscriber("image_subscriber", args.name)
 

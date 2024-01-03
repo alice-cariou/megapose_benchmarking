@@ -15,7 +15,7 @@ class FixedTFBroadcaster:
     def __init__(self, name):
         self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
         self.transform_array = []
-        ex_dir = os.path.dirname(__file__)+"/../tiago/"+name
+        ex_dir = os.path.dirname(__file__)+"/../../tiago/"+name
 
 
         from_megapose_to_tf = pin.SE3(np.array([[0,0,1],[0,-1,0],[1,0,0]]),np.array([0,0,0]))
@@ -23,7 +23,7 @@ class FixedTFBroadcaster:
 
 
         torso_lift_link_M_cam = get_pin_SE3(ex_dir, 'details.yaml', 'tf_camera')
-        #adjustment to correct my mistake : +0.022 in y from xtion_link to stion_rgb_frame
+        #adjustment to correct my mistake : +0.022 in y from xtion_link to stion_rgb_frame #TODO: remove it for any new test
         torso_lift_link_M_cam.translation += np.array([0,0.022,0])
         quat_torso_lift_link_M_cam = pin.SE3ToXYZQUAT(torso_lift_link_M_cam)
         cam_M_torso_lift_link = torso_lift_link_M_cam.inverse()
@@ -35,9 +35,8 @@ class FixedTFBroadcaster:
 
         cam_M_obj = cam_M_torso_lift_link*torso_lift_link_M_mocap*mocap_M_obj
 
-        #cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'{name}.yaml', 'megapose')
         cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose')
-        cam_M_megapose_raw = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose') #TODO: will change to details.yaml
+        cam_M_megapose_raw = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose')
 
 
         quat_cam_M_obj = pin.SE3ToXYZQUAT(cam_M_obj)
@@ -62,41 +61,24 @@ class FixedTFBroadcaster:
         while not rospy.is_shutdown():
             rospy.sleep(0.1)
 
-
             tfm = create_tfMessage("origin_mocap", "torso_lift_link", quat_mocap_M_torso)
             tfm2 = create_tfMessage("origin_mocap", "mocap_M_obj", quat_mocap_M_obj)
             tfm3 = create_tfMessage("torso_lift_link", "origin_mocap", quat_torso_lift_link_M_mocap)
-            tfm5 = create_tfMessage("torso_lift_link", "cam", quat_torso_lift_link_M_cam)
-            tfm6 = create_tfMessage("cam","cam_M_megapose", quat_cam_M_megapose)
-            tfm7 = create_tfMessage("origin_mocap", "test", quat_mocap_M_megapose)
+            tfm4 = create_tfMessage("torso_lift_link", "cam", quat_torso_lift_link_M_cam)
+            tfm5 = create_tfMessage("cam","cam_M_megapose", quat_cam_M_megapose)
+            tfm6 = create_tfMessage("origin_mocap", "test", quat_mocap_M_megapose)
 
             self.pub_tf.publish(tfm)
             self.pub_tf.publish(tfm2)
             #self.pub_tf.publish(tfm3)
+            self.pub_tf.publish(tfm4)
             self.pub_tf.publish(tfm5)
-            self.pub_tf.publish(tfm6)
-            #self.pub_tf.publish(tfm7)
-
-
-'''       
-def get_quat_array(ex_dir, filename, el):#el = 'tf_camera' | 'base_robot' | 'object'
-    yfile = f"{ex_dir}/{filename}"
-    if not os.path.exists(ex_dir):
-        logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
-        return
-    with open(yfile, 'r') as f:
-        data = yaml.safe_load(f)
-
-        pos = data[el]['pos']
-        x,y,z = pos['x'], pos['y'], pos['z']
-        q = data[el]['quaternion']
-        qw, qx, qy, qz = q['qw'], q['qx'], q['qy'], q['qz']
-    return np.array([x,y,z,qw,qx,qy,qz])'''
+            #self.pub_tf.publish(tfm6)
 
 def get_pin_SE3(ex_dir, filename, el): #el = 'tf_camera' | 'base_robot' | 'object'
     yfile = f"{ex_dir}/{filename}"
     if not os.path.exists(ex_dir):
-        logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
+        print('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
         return
     with open(yfile, 'r') as f:
         data = yaml.safe_load(f)
@@ -109,17 +91,6 @@ def get_pin_SE3(ex_dir, filename, el): #el = 'tf_camera' | 'base_robot' | 'objec
     position = np.array([x, y, z])
     quaternion = np.array([qw, qx, qy, qz])
     return pin.SE3(pin.Quaternion(quaternion), position)
-
-def tf(header_frame, child_frame):
-    tfBuffer = tf2_ros.Buffer()
-    listener = tf2_ros.TransformListener(tfBuffer)
-    trans = tfBuffer.lookup_transform(header_frame, child_frame, rospy.Time(), rospy.Duration(1.0))
-    print(trans.transform)
-    pos = trans.transform.translation
-    att = trans.transform.rotation
-
-    #content = {'tf_camera': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.w,'qx': att.x,'qy': att.y,'qz': att.z}}}
-    #utils.yaml_manager(ex_name, 'tf_camera', 'details.yaml', content)
 
 def create_tfMessage(header_frame, child_frame, transform):
     t = geometry_msgs.msg.TransformStamped()
@@ -142,7 +113,7 @@ def main():
 
     args = parser.parse_args()
     if not args.name:
-        logger.error('Please provide an example name : --name <example_name>')
+        print('Please provide an example name : --name <example_name>')
         return
 
     rospy.init_node('test_broadcaster')

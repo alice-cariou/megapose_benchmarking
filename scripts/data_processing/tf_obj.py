@@ -1,18 +1,15 @@
 #!/usr/bin/env python
 
-import utils
+import ./utils
 
 import rospy
-import math
 import tf2_ros
 import geometry_msgs.msg
 
-import os
 import yaml
 import argparse
 
 import numpy as np
-import sys
 from scipy.spatial.transform import Rotation as R
 
 class Robot_Subscriber:
@@ -30,8 +27,6 @@ def tf(header_frame, child_frame,ex_name):
     quat = np.array([att.x,att.y,att.z,att.w])
     rot = R.from_quat(quat)
     euler = rot.as_euler('xyz', degrees=True)
-
-    print(pos,euler)
 
     content = {'transformation from mocap to megapose': {'translation': {'x': pos.x,'y': pos.y,'z' : pos.z},'rotation':{'x': float(euler[0]),'y': float(euler[1]),'z': float(euler[2])}}}
     utils.yaml_manager(ex_name, 'tf_camera', 'results.yaml', content)

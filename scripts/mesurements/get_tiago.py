@@ -11,11 +11,6 @@ import cv2
 import yaml
 import argparse
 
-import logging
-logging.basicConfig()
-logger = logging.getLogger('get_tiago')
-logger.setLevel(logging.INFO)
-
 bridge = CvBridge()
 
 class Subscriber_tiago:
@@ -24,7 +19,7 @@ class Subscriber_tiago:
         print(0)
         self.ex_name = ex_name
         self.sub1 = rospy.Subscriber("/optitrack/bodies/tiago_smth", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
-        #self.sub2 = rospy.Subscriber("/xtion/rgb/images_raw", Image, lambda data: self.callback_image(data))
+        self.sub2 = rospy.Subscriber("/xtion/rgb/images_raw", Image, lambda data: self.callback_image(data))
 
     def callback_pos_tiago(self, data):
         rospy.loginfo("I heard %s",data)
@@ -57,7 +52,7 @@ def main():
 
     args = parser.parse_args()
     if not args.name:
-        logger.error('Please provide an example name : --name <example_name>')
+        print('Please provide an example name : --name <example_name>')
         return
 
     listener(args.name)

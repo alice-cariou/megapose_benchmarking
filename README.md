@@ -46,7 +46,7 @@ After that, you should have a new example in the tiago directory, containing the
 
 To test a new example with megapose, you will need to :  
 
-Create an inputs file for megapose, with the name of the example directory, the name of the object, and the coordinates of the bounding box around the object to detect.  
+Create an inputs file for megapose, with the name of the example directory, the name of the object, and the coordinates of the bounding box around the object to detect. (temporary solution hopefully)
 `./screate_inputs_file.py --name <example_name> --object <object_name> x1 y1 x2 y2`  
 an example of use for this script would be :  
 `./screate_inputs_file.py --name 004 --object tless23 300 286 425 336`
@@ -64,3 +64,12 @@ After that, you should be able to access the outputs of megapose for this exampl
 ## comparing the results
 
 You can find the results of the megapose detection and the mocap detection in the new example directory, in the yaml file with the corresponding name.
+
+
+things to update :
+results : first observation : errors in multiple directions, not always the same way, so probably not a mesuring issue
+still waiting for more examples to be sure
+
+change doc about how to use the scripts : change names and more
+talk about the project organization
+talk about how to see the results

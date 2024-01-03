@@ -19,7 +19,7 @@ class Image_Subscriber:
     def callback(self, image_msg):
         print("Subscribe images from topic /xtion/rgb/image_raw ...")
         cv_image = imgmsg_to_cv2(image_msg)
-        path=os.path.dirname(os.path.realpath(__file__))+'/../tiago/'+self.ex_name+'/image_rgb.png'
+        path=os.path.dirname(os.path.realpath(__file__))+'/../../tiago/'+self.ex_name+'/image_rgb.png'
         cv2.imwrite(path, cv_image)
         print("save image as "+path)
         self.sub.unregister()

@@ -13,7 +13,7 @@ class FixedTFBroadcaster:
 
     def __init__(self):
         self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
-        ex_dir = os.path.dirname(__file__)+"/../tiago/004"
+        ex_dir = os.path.dirname(__file__)+"/../../tiago/004"
 
         #rotation&translation matrixes
         from_tf_to_mocap = pin.SE3(np.array([[0,0,1],[1,0,0],[0,1,0]]),np.array([0,0,0]))

@@ -11,13 +11,10 @@ logger = logging.getLogger('create_megapose_example')
 logger.setLevel(logging.INFO)
 
 def get_dir(name):
-    print(1)
-
-def get_dir(name):
     #create nexessary dirs
-    frompath = os.path.dirname(os.path.realpath(__file__))+f'/../tiago/{name}'
+    frompath = os.path.dirname(os.path.realpath(__file__))+f'/../../tiago/{name}'
     if not os.path.exists(frompath):
-        logger.error("no")
+        logger.error(f"the {frompath} directory does not exist")
     datadir = os.environ.get('MEGAPOSE_DATA_DIR')
     if datadir == None:
         datadir = datadir = os.environ.get('HAPPYPOSE_DATA_DIR')
@@ -26,7 +23,7 @@ def get_dir(name):
             return
 
     expath = datadir + '/examples/' + name
-    print(expath)
+
     Path(expath).mkdir(parents=True,exist_ok=True)
     Path(expath + "/inputs").mkdir(exist_ok=True)
     Path(expath + "/meshes").mkdir(exist_ok=True)
@@ -52,7 +49,7 @@ def get_dir(name):
     label = res['label']
 
     Path(f"{expath}/meshes/{label}").mkdir(exist_ok=True)
-    meshpath = os.path.dirname(os.path.realpath(__file__))+'/../meshes'
+    meshpath = os.path.dirname(os.path.realpath(__file__))+'/../../meshes'
     shutil.copy(f'{meshpath}/{label}.ply', f'{expath}/meshes/{label}')
 
     #copy image
