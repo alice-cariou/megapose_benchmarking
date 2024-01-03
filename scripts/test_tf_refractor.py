@@ -8,23 +8,23 @@ import yaml
 import numpy as np
 import pinocchio as pin
 import math
+import argparse
 
 class FixedTFBroadcaster:
 
-    def __init__(self):
+    def __init__(self, name):
         self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
         self.transform_array = []
-        ex_dir = os.path.dirname(__file__)+"/../tiago/004"
+        ex_dir = os.path.dirname(__file__)+"/../tiago/"+name
 
-        #rotation&translation matrixes
-        from_tf_to_mocap = pin.SE3(np.array([[0,0,1],[1,0,0],[0,1,0]]),np.array([0,0,0]))
-        from_mocap_to_tf = from_tf_to_mocap.inverse()
-        from_panda_to_tf = pin.SE3(np.array([[0,-1,0],[1,0,0],[0,0,1]]),np.array([0,0,0]))
+
         from_megapose_to_tf = pin.SE3(np.array([[0,0,1],[0,-1,0],[1,0,0]]),np.array([0,0,0]))
-        test = pin.SE3(np.array([[0,0,-1],[0,-1,0],[-1,0,0]]),np.array([0,0,0]))
-        from_megapose_to_mocap = pin.SE3(np.array([[0,-1,0],[-1,0,0],[0,0,1]]),np.array([0,0,0]))
+        aled = pin.SE3(np.array([[0,-1,0],[1,0,0],[0,0,1]]),np.array([0,0,0]))
+
 
         torso_lift_link_M_cam = get_pin_SE3(ex_dir, 'details.yaml', 'tf_camera')
+        #adjustment to correct my mistake : +0.022 in y from xtion_link to stion_rgb_frame
+        torso_lift_link_M_cam.translation += np.array([0,0.022,0])
         quat_torso_lift_link_M_cam = pin.SE3ToXYZQUAT(torso_lift_link_M_cam)
         cam_M_torso_lift_link = torso_lift_link_M_cam.inverse()
 
@@ -35,7 +35,9 @@ class FixedTFBroadcaster:
 
         cam_M_obj = cam_M_torso_lift_link*torso_lift_link_M_mocap*mocap_M_obj
 
-        cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, '004.yaml', 'megapose')
+        #cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'{name}.yaml', 'megapose')
+        cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose')
+        cam_M_megapose_raw = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose') #TODO: will change to details.yaml
 
 
         quat_cam_M_obj = pin.SE3ToXYZQUAT(cam_M_obj)
@@ -52,8 +54,10 @@ class FixedTFBroadcaster:
         mocap_M_cam = mocap_M_torso_lift_link*torso_lift_link_M_cam
         quat_mocap_M_cam = pin.SE3ToXYZQUAT(mocap_M_cam)
 
+        mocap_M_megapose = mocap_M_torso_lift_link*(torso_lift_link_M_cam)
+        quat_mocap_M_megapose = pin.SE3ToXYZQUAT(mocap_M_megapose)
+
         print(quat_cam_M_obj,quat_cam_M_megapose)
-        #+0.022
 
         while not rospy.is_shutdown():
             rospy.sleep(0.1)
@@ -64,16 +68,17 @@ class FixedTFBroadcaster:
             tfm3 = create_tfMessage("torso_lift_link", "origin_mocap", quat_torso_lift_link_M_mocap)
             tfm5 = create_tfMessage("torso_lift_link", "cam", quat_torso_lift_link_M_cam)
             tfm6 = create_tfMessage("cam","cam_M_megapose", quat_cam_M_megapose)
-            tfm7 = create_tfMessage("mocap_M_obj", "test", quat_obj_M_megapose)
+            tfm7 = create_tfMessage("origin_mocap", "test", quat_mocap_M_megapose)
 
             self.pub_tf.publish(tfm)
             self.pub_tf.publish(tfm2)
             #self.pub_tf.publish(tfm3)
             self.pub_tf.publish(tfm5)
             self.pub_tf.publish(tfm6)
-            self.pub_tf.publish(tfm7)
+            #self.pub_tf.publish(tfm7)
 
-        
+
+'''       
 def get_quat_array(ex_dir, filename, el):#el = 'tf_camera' | 'base_robot' | 'object'
     yfile = f"{ex_dir}/{filename}"
     if not os.path.exists(ex_dir):
@@ -86,7 +91,7 @@ def get_quat_array(ex_dir, filename, el):#el = 'tf_camera' | 'base_robot' | 'obj
         x,y,z = pos['x'], pos['y'], pos['z']
         q = data[el]['quaternion']
         qw, qx, qy, qz = q['qw'], q['qx'], q['qy'], q['qz']
-    return np.array([x,y,z,qw,qx,qy,qz])
+    return np.array([x,y,z,qw,qx,qy,qz])'''
 
 def get_pin_SE3(ex_dir, filename, el): #el = 'tf_camera' | 'base_robot' | 'object'
     yfile = f"{ex_dir}/{filename}"
@@ -105,6 +110,17 @@ def get_pin_SE3(ex_dir, filename, el): #el = 'tf_camera' | 'base_robot' | 'objec
     quaternion = np.array([qw, qx, qy, qz])
     return pin.SE3(pin.Quaternion(quaternion), position)
 
+def tf(header_frame, child_frame):
+    tfBuffer = tf2_ros.Buffer()
+    listener = tf2_ros.TransformListener(tfBuffer)
+    trans = tfBuffer.lookup_transform(header_frame, child_frame, rospy.Time(), rospy.Duration(1.0))
+    print(trans.transform)
+    pos = trans.transform.translation
+    att = trans.transform.rotation
+
+    #content = {'tf_camera': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.w,'qx': att.x,'qy': att.y,'qz': att.z}}}
+    #utils.yaml_manager(ex_name, 'tf_camera', 'details.yaml', content)
+
 def create_tfMessage(header_frame, child_frame, transform):
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = header_frame
@@ -120,8 +136,19 @@ def create_tfMessage(header_frame, child_frame, transform):
 
     return tf2_msgs.msg.TFMessage([t])
 
-if __name__ == '__main__':
+def main():
+    parser = argparse.ArgumentParser('tf_rviz')
+    parser.add_argument('--name', type=str)
+
+    args = parser.parse_args()
+    if not args.name:
+        logger.error('Please provide an example name : --name <example_name>')
+        return
+
     rospy.init_node('test_broadcaster')
-    tfb = FixedTFBroadcaster()
+    tfb = FixedTFBroadcaster(args.name)
 
     rospy.spin()
+
+if __name__ == '__main__':
+    main()

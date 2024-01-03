@@ -213,7 +213,7 @@ def get_obj_pos(ex_dir, name, pos, quat):
 
     content = {'mocap': {'quaternion': {'qw':float(result_quaternion[0]),'qx':float(result_quaternion[1]),'qy':float(result_quaternion[2]),'qz':float(result_quaternion[3])}, 'pos': {'x':float(result_position[0]),'y':float(result_position[1]),'z':float(result_position[2])}}}
 
-    utils.yaml_manager(name, 'mocap', name+'.yaml', content)
+    utils.yaml_manager(name, 'mocap', 'details.yaml', content)
     return result_quaternion, result_position
 
 def get_megapose_matrix(ex_dir):

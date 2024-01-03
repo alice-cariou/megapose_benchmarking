@@ -43,7 +43,7 @@ def get_megapose_outputs(ex_name):
         #return
 
     content = {'megapose': {'quaternion': {'qw' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
-    utils.yaml_manager(ex_name, 'megapose', f'{ex_name}.yaml', content)
+    utils.yaml_manager(ex_name, 'megapose', 'details.yaml', content)
 
 def main():
     parser = argparse.ArgumentParser('Get megapose results')
