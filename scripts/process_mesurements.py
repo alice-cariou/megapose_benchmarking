@@ -15,7 +15,7 @@ class FixedTFBroadcaster:
     def __init__(self, name):
         self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
         self.transform_array = []
-        ex_dir = os.path.dirname(__file__)+"/../../tiago/"+name
+        ex_dir = os.path.dirname(__file__)+"/../tiago/"+name
 
 
         from_megapose_to_tf = pin.SE3(np.array([[0,0,1],[0,-1,0],[1,0,0]]),np.array([0,0,0]))

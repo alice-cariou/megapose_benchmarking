@@ -36,7 +36,7 @@ def get_megapose_outputs(ex_name):
     res = literal_eval(res)
     two = res['TWO']
 
-    ex_dir = f'{os.path.dirname(__file__)}/../../tiago/{ex_name}'
+    ex_dir = f'{os.path.dirname(__file__)}/../tiago/{ex_name}'
     if not os.path.exists(ex_dir):
         os.makedirs(ex_dir, exist_ok=True)
 

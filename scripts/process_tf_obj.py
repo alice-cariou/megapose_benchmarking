@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import ./utils
+import utils
 
 import rospy
 import tf2_ros
@@ -37,7 +37,7 @@ def main():
 
     args = parser.parse_args()
     if not args.name:
-        logger.error('Please provide an example name : --name <example_name>')
+        print('Please provide an example name : --name <example_name>')
         return
 
     sub = Robot_Subscriber("image_subscriber",args.name)

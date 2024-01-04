@@ -12,9 +12,10 @@ logger.setLevel(logging.INFO)
 
 def get_dir(name):
     #create nexessary dirs
-    frompath = os.path.dirname(os.path.realpath(__file__))+f'/../../tiago/{name}'
+    frompath = os.path.dirname(os.path.realpath(__file__))+f'/../tiago/{name}'
     if not os.path.exists(frompath):
         logger.error(f"the {frompath} directory does not exist")
+        return
     datadir = os.environ.get('MEGAPOSE_DATA_DIR')
     if datadir == None:
         datadir = datadir = os.environ.get('HAPPYPOSE_DATA_DIR')
@@ -31,14 +32,16 @@ def get_dir(name):
     #create necessary files
     if not os.path.exists(frompath+"/../camera_data.json"):
         logger.error("missing data file at "+frompath+"/../camera_data.json")
+        return
     if not os.path.exists(frompath+"/object_data.json"):
         logger.error("missing data file at "+frompath+"/object_data.json")
+        return
     
     shutil.copy(frompath+"/../camera_data.json", expath+"/camera_data.json")
     shutil.copy(frompath+"/object_data.json", expath+"/inputs/object_data.json")
 
 
-    #get list of labels
+    #get label
     with open(frompath+"/object_data.json", 'r') as f:
         res = f.read()
     if not res :
@@ -47,16 +50,25 @@ def get_dir(name):
     res = res[1:-2]
     res = literal_eval(res)
     label = res['label']
+    obj = label[-2:]
 
     Path(f"{expath}/meshes/{label}").mkdir(exist_ok=True)
-    meshpath = os.path.dirname(os.path.realpath(__file__))+'/../../meshes'
-    shutil.copy(f'{meshpath}/{label}.ply', f'{expath}/meshes/{label}')
+    meshpath = f"{datadir}/bop_datasets/tless/models"
+    if not os.path.exists(meshpath):
+        logger.error("error in the meshes path. Did you download the tless dataset ?")
+        return
+    if not os.path.exists(f'{meshpath}/obj_0000{obj}.ply'):
+        logger.error(f"error in the object name.\nExpected: tlessXX with XX between 01 and 30\nGot: {label}")
+        return
+    shutil.copy(f'{meshpath}/obj_0000{obj}.ply', f'{expath}/meshes/{label}')
 
     #copy image
     if not os.path.exists(frompath+"/image_rgb.png"):
         logger.error("missing image")
         return
     shutil.copy(frompath+"/image_rgb.png", expath+"/image_rgb.png")
+
+    logger.info(f'created example at {expath}')
 
 def main():
     parser = argparse.ArgumentParser('Get megapose results')

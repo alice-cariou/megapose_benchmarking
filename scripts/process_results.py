@@ -4,7 +4,7 @@ import numpy as np
 from statistics import mean, median
 
 def get_results():
-    ex_dir = os.path.dirname(os.path.realpath(__file__))+'/../../tiago/'
+    ex_dir = os.path.dirname(os.path.realpath(__file__))+'/../tiago/'
     if not os.path.exists(ex_dir):
         logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
         return
