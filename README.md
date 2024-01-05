@@ -10,38 +10,43 @@ The benchmarking data is located in the `tiago` directory. Each example subdirec
 - an `object_data.json` file, containing the label and bbox needed for megapose in the right format
 - a `details.yaml` with all the mesurements used
 
-To create new tests yourself, or run megapose on the existing tests, scripts can be found in the `scripts` directory.
+To create new tests, or run megapose on the existing tests, scripts can be found in the `scripts` directory.
 
-The following is about how to use the scripts.
+The following instructios include how to use the scripts.
 
 # Before use
 
-{{{That shouldn't be an issue if you used megapose before, but make sure you have a HAPPYPOSE_DATA_DIR environment variable (if you are using an older version of the project, MEGAPOSE_DATA_DIR will also work).}}} -> inutile, juste dire d'aller configurer son env pour happypose anyway
+Depending on your goals, you might need to install stuff or configure your environement.
+- megapose relating scripts : you will need megapose, configure the environment.Too obvious ? TODO
+- mocap : might be a few things to configure depending on the computer.If it is the first time you use optitrack, you might need to setup a few things [here](lien?)  
 
 ## create a test using tiago and the mocap
 
 ### on a computer connected to tiago
 
-If it is the first time you use optitrack, you might need to setup a few things [here](https://wiki.laas.fr/robots/PR2/Mocap)  
-Otherwise, you can already do :  
-
+At the root oof the repository :
 `source setup_tiago.sh`  -> will assume you have a ~/openrobots directory
 `optitrack-ros -b`  
 `rosaction call /optitrack/connect '{host: "muybridge", host_port: "1510", mcast: "239.192.168.30", mcast_port: "1511"}'`
 
-You can now get the position of tiago, (I used the position of torso_lift_link), and the position of the object (I used the plank_gepetto): 
+You can now get all the necessary mesurements.
+
+### tiago position in the mocap frame
+TODO: choose the best scripts
+To make the following steps easier, the position detected, tiago_smth, corresponds to torso_lift_link in the robot model, on top of the robot.
 `./get_mocap.py --name <example_name>`
+
+### object position in the mocap frame
+
+To obtain the object position without modifying its appearance, i created plank_gepetto, which TODO
+`./get_tless.py --name <example_name>`
+
+### 
 
 You should now have access to the topics regarding tiago.  
 You can now get the image and the position of the camera with:  
 `./get_tiago_infos.py --name <example_name>`
 
-### afterwards
-
-You can now use the informations you gathered and transform them to have a position and rotation comparable to megapose outputs :  
-`./transform.py --name <example_name>`
-
-After that, you should have a new example in the tiago directory, containing the data you just got.
 
 ## using megapose
 

@@ -24,7 +24,7 @@ class FixedTFBroadcaster:
 
         torso_lift_link_M_cam = get_pin_SE3(ex_dir, 'details.yaml', 'tf_camera')
         #adjustment to correct my mistake : +0.022 in y from xtion_link to stion_rgb_frame #TODO: remove it for any new test
-        torso_lift_link_M_cam.translation += np.array([0,0.022,0])
+        #torso_lift_link_M_cam.translation += np.array([0,0.022,0])
         quat_torso_lift_link_M_cam = pin.SE3ToXYZQUAT(torso_lift_link_M_cam)
         cam_M_torso_lift_link = torso_lift_link_M_cam.inverse()
 
