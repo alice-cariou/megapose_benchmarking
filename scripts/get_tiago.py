@@ -18,7 +18,7 @@ class Subscriber_tiago:
         rospy.init_node(name)
         print(0)
         self.ex_name = ex_name
-        self.sub1 = rospy.Subscriber("/optitrack/bodies/tiago_smth", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
+        #self.sub1 = rospy.Subscriber("/optitrack/bodies/tiago_smth", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
         self.sub2 = rospy.Subscriber("/xtion/rgb/images_raw", Image, lambda data: self.callback_image(data))
 
     def callback_pos_tiago(self, data):

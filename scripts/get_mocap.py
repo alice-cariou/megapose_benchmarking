@@ -15,7 +15,7 @@ class Subscriber_mocap:
         rospy.init_node(name)
         self.ex_name = ex_name
 
-        self.sub2 = rospy.Subscriber("/optitrack/bodies/tiago_smth", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
+        self.sub2 = rospy.Subscriber("/optitrack/bodies/tiago_torso_lift_link", or_pose_estimator_state, lambda data: self.callback_pos_tiago(data))
         self.sub1 = rospy.Subscriber("/optitrack/bodies/plank_gepetto", or_pose_estimator_state, lambda data: self.callback_plank(data))
 
     def callback_plank(self, data):

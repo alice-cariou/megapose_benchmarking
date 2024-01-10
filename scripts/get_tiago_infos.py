@@ -22,7 +22,7 @@ class Robot_Subscriber:
         rospy.init_node(name, anonymous=True)
         self.ex_name = ex_name
         tf(ex_name)
-        self.sub = rospy.Subscriber("/xtion/rgb/image_raw", Image, self.callback)
+        #self.sub = rospy.Subscriber("/xtion/rgb/image_raw", Image, self.callback)
 
     def callback(self, image_msg):
         print("Subscribe images from topic /xtion/rgb/image_raw ...")

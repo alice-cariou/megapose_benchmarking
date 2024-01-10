@@ -85,3 +85,7 @@ install : http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/InstallUbuntuA
 copy ac_show.launch file in your tiago_public_ws/src/tiago_robot/tiago_description/robots/ directory
 source tiago_public_ws/devel/setup.bach
 roslaunch stuff
+note : python2 : 'y'
++ note : ros1 melodic et python 2.7
++ explanations plank_gepetto
+
