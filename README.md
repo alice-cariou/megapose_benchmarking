@@ -98,3 +98,7 @@ copy ac_show.launch file in your tiago_public_ws/src/tiago_robot/tiago_descripti
 then, each time you need to use it :
 source tiago_public_ws/devel/setup.bach
 roslaunch tiago_description ac_show.launch
+
+note : python2 : 'y'
++ note : ros1 melodic et python 2.7
++ explanations plank_gepetto

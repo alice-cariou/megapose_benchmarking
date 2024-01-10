@@ -21,6 +21,6 @@ def yaml_manager(ex_name, key_name, filename, content):
     with open(yml_path+'/'+filename, 'w') as f:
         if not data:
             data = content
-        yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
+        yaml.safe_dump(data, f, default_flow_style=False)
     
     print('wrote results in tiago/'+ex_name+'/'+filename)
