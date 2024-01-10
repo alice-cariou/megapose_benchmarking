@@ -4,28 +4,32 @@ Benchmarking of [megapose](https://github.com/agimus-project/happypose) using Ti
 
 # Using this repository
 
+The results can be found in the all_results.yaml file, with the average, median, minimum and maximum results.
+
 The benchmarking data is located in the `tiago` directory. Each example subdirectory has :
--  a `results.yaml` file, containing the transformation between the mocap mesurement (our truth) and the megapose results
+- a `results.yaml` file, containing the transformation between the mocap mesurement (our truth) and the megapose results
 - the image as `image_rgb.png`
 - an `object_data.json` file, containing the label and bbox needed for megapose in the right format
 - a `details.yaml` with all the mesurements used
 
 To create new tests, or run megapose on the existing tests, scripts can be found in the `scripts` directory.
 
-The following instructios include how to use the scripts.
+The following instructios describe how to use the scripts.
 
 # Before use
 
 Depending on your goals, you might need to install stuff or configure your environement.
 - megapose relating scripts : you will need megapose, configure the environment.Too obvious ? TODO
-- mocap : might be a few things to configure depending on the computer.If it is the first time you use optitrack, you might need to setup a few things [here](lien?)  
+- mocap : might be a few things to configure depending on the computer.If it is the first time you use optitrack, you might need to setup a few things [here](lien?)
+- rviz : link to bottom 
 
 ## create a test using tiago and the mocap
 
 ### on a computer connected to tiago
 
-At the root oof the repository :
-`source setup_tiago.sh`  -> will assume you have a ~/openrobots directory
+To use the following commands, you need to be able to connect to the mocap.
+At the root of the repository :
+`source setup_tiago.sh`  -> will assume you have a ~/openrobots_ws directory
 `optitrack-ros -b`  
 `rosaction call /optitrack/connect '{host: "muybridge", host_port: "1510", mcast: "239.192.168.30", mcast_port: "1511"}'`
 
@@ -59,29 +63,38 @@ an example of use for this script would be :
 
 Create the megapose example using the informations you have in this directory :  
 `./create_megapose_example.py --name <example_name>`
+This will create the example in the datadir you chose for happypose, ready to be used by happypose.
 
 You can now run megapose on this new example using :  
-`python -m happypose.pose_estimators.megapose.scripts.run_inference_on_example <example_name> --run-inference --vis-outputs --vis-detections`  
+`python -m happypose.pose_estimators.megapose.scripts.run_inference_on_example <example_name> --run-inference --vis-outputs`  
 If you are not familiar with happypose, you might need to check its repository to configure your environment correctly : [happypose](https://github.com/agimus-project/happypose)
 
 After that, you should be able to access the outputs of megapose for this example with :  
 `./get_outputs_megapose.py --name <example_name>`
+This will add megapose informations in the details.yaml of your example directory.
 
 ## comparing the results
 
-You can find the results of the megapose detection and the mocap detection in the new example directory, in the yaml file with the corresponding name.
+To visualize the results with rviz and calculate the things:
+first -> check link to install rviz
 
+`./process_mesurements.py --name <example_name>`
+This will show the robot and the object from the mocap, and the megapose results
 
-things to update :
-results : first observation : errors in multiple directions, not always the same way, so probably not a mesuring issue
-still waiting for more examples to be sure
+In another window:
+`./process_tf_obj --name <example_name>`
+This will calculate the transform between what was detected by megapose and the "truth" (mocap), and write in the results.yaml file of your example directory.
 
-change doc about how to use the scripts : change names and more
-talk about the project organization
-talk about how to see the results
+Finally, if you added a new example and want it to be taken into consideration in the all_results.yaml file, you can run:
+`./process_results`
 
-visualizing with rviz : 
-install : http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/InstallUbuntuAndROS
+## rviz
+
+The installation is detailled [here](http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/InstallUbuntuAndROS)
+You should then have created a workspace (named tiago_public_ws if you kept the name from the tutorial)
+
 copy ac_show.launch file in your tiago_public_ws/src/tiago_robot/tiago_description/robots/ directory
+
+then, each time you need to use it :
 source tiago_public_ws/devel/setup.bach
-roslaunch stuff
+roslaunch tiago_description ac_show.launch
