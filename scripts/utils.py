@@ -11,13 +11,14 @@ def yaml_manager(ex_name, key_name, filename, content):
     if os.path.exists(yml_path+'/'+filename):
         with open(yml_path+'/'+filename, 'r') as f:
             data = yaml.safe_load(f)
-            if key_name in data:
-                cmd = input("there are already "+key_name+" data in this yaml file. Do you wish to override them ? y/n ")
-                cmd.lower()
-                if cmd not in ('y','yes'):
-                    print("aborting")
-                    return
-            data.update(content)
+            if data != None:
+                if key_name in data:
+                    cmd = input("there are already "+key_name+" data in this yaml file. Do you wish to override them ? y/n ")
+                    cmd.lower()
+                    if cmd not in ('y','yes'):
+                        print("aborting")
+                        return
+                data.update(content)
     with open(yml_path+'/'+filename, 'w') as f:
         if not data:
             data = content

@@ -1,6 +1,0 @@
-Usage: tf_echo source_frame target_frame [echo_rate]
-
-This will echo the transform from the coordinate frame of the source_frame
-to the coordinate frame of the target_frame. 
-Note: This is the transform to get data from target_frame into the source_frame.
-Default echo rate is 1 if echo_rate is not given.

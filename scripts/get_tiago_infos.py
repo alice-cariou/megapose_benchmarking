@@ -22,7 +22,7 @@ class Robot_Subscriber:
         rospy.init_node(name, anonymous=True)
         self.ex_name = ex_name
         tf(ex_name)
-        #self.sub = rospy.Subscriber("/xtion/rgb/image_raw", Image, self.callback)
+        self.sub = rospy.Subscriber("/xtion/rgb/image_raw", Image, self.callback)
 
     def callback(self, image_msg):
         print("Subscribe images from topic /xtion/rgb/image_raw ...")
@@ -42,7 +42,7 @@ def imgmsg_to_cv2(img_msg):
 
 
 def tf(ex_name):
-    rospy.init_node('tf2_test_listener')
+    #rospy.init_node('tf2_test_listener')
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
     trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_rgb_frame', rospy.Time(), rospy.Duration(1.0))
@@ -62,7 +62,7 @@ def main():
         print('Please provide an example name : --name <example_name>')
         return
 
-    tf(args.name)
+    #tf(args.name)
 
     sub = Robot_Subscriber("image_subscriber", args.name)
 
