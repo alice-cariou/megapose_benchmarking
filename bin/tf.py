@@ -25,7 +25,7 @@ def tf(ex_name):
     #    print('yay')
     #listener.waitForTransform('torso_lift_link', 'xtion_link', rospy.Time(), rospy.Duration(4.0))
     #(trans,rot) = listener.lookupTransform('torso_lift_link', 'xtion_link', now)
-    trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_link', rospy.Time(), rospy.Duration(1.0))
+    trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_rgb_frame', rospy.Time(), rospy.Duration(1.0))
     print(trans.transform)
     pos = trans.transform.translation
     att = trans.transform.rotation

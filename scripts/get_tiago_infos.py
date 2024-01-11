@@ -42,6 +42,7 @@ def imgmsg_to_cv2(img_msg):
 
 
 def tf(ex_name):
+    rospy.init_node('tf2_test_listener')
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
     trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_rgb_frame', rospy.Time(), rospy.Duration(1.0))
