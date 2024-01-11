@@ -25,7 +25,7 @@ class Subscriber_mocap:
             pos = data.pos[0]
             att = data.att[0]
             content = {'mocap_M_object': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
-            utils.yaml_manager(self.ex_name, 'object', 'details.yaml', content)
+            utils.yaml_manager(self.ex_name, 'mocap_M_object', 'details.yaml', content)
 
     def callback_pos_tiago(self, data):
         rospy.loginfo("I heard %s",data)
@@ -34,7 +34,7 @@ class Subscriber_mocap:
             pos = data.pos[0]
             att = data.att[0]
             content = {'mocap_M_tiago': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
-            utils.yaml_manager(self.ex_name, 'base_robot', 'details.yaml', content)
+            utils.yaml_manager(self.ex_name, 'mocap_M_tiago', 'details.yaml', content)
 
 def listener(ex_name):
     sub = Subscriber_mocap("tless_infos", ex_name)

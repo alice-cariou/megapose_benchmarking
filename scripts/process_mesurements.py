@@ -72,7 +72,7 @@ class FixedTFBroadcaster:
             self.pub_tf.publish(tfm5)
             #self.pub_tf.publish(tfm6)
 
-def get_pin_SE3(ex_dir, filename, el): #el = 'tiago_M_cam' | 'base_robot' | 'object'
+def get_pin_SE3(ex_dir, filename, el): #el = 'tiago_M_cam' | 'mocap_M_tiago' | 'mocap_M_object'
     yfile = f"{ex_dir}/{filename}"
     if not os.path.exists(ex_dir):
         print('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
