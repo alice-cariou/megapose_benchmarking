@@ -40,7 +40,7 @@ def get_megapose_outputs(ex_name):
     if not os.path.exists(ex_dir):
         os.makedirs(ex_dir, exist_ok=True)
 
-    content = {'megapose': {'quaternion': {'qw' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
+    content = {'megapose__cam_M_object': {'quaternion': {'qw' : two[0][0], 'qx' : two[0][1], 'qy' : two[0][2], 'qz' : two[0][3]},'pos' : {'x' : two[1][0] , 'y' : two[1][1] , 'z' : two[1][2]}}}
     utils.yaml_manager(ex_name, 'megapose', 'details.yaml', content)
 
 def main():

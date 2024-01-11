@@ -22,22 +22,19 @@ class FixedTFBroadcaster:
         aled = pin.SE3(np.array([[0,-1,0],[1,0,0],[0,0,1]]),np.array([0,0,0]))
 
 
-        torso_lift_link_M_cam = get_pin_SE3(ex_dir, 'details.yaml', 'tf_camera')
-        #adjustment to correct my mistake : +0.022 in y from xtion_link to stion_rgb_frame #TODO: remove it for any new test
-        #torso_lift_link_M_cam.translation += np.array([0,0.022,0])
+        torso_lift_link_M_cam = get_pin_SE3(ex_dir, 'details.yaml', 'tiago_M_cam')
+
         quat_torso_lift_link_M_cam = pin.SE3ToXYZQUAT(torso_lift_link_M_cam)
         cam_M_torso_lift_link = torso_lift_link_M_cam.inverse()
 
-        mocap_M_torso_lift_link = get_pin_SE3(ex_dir, 'details.yaml', 'base_robot')
+        mocap_M_torso_lift_link = get_pin_SE3(ex_dir, 'details.yaml', 'mocap_M_tiago')
         torso_lift_link_M_mocap = mocap_M_torso_lift_link.inverse()
 
-        mocap_M_obj = get_pin_SE3(ex_dir, 'details.yaml', 'object')
+        mocap_M_obj = get_pin_SE3(ex_dir, 'details.yaml', 'mocap_M_object')
 
         cam_M_obj = cam_M_torso_lift_link*torso_lift_link_M_mocap*mocap_M_obj
 
-        cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose')
-        cam_M_megapose_raw = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose')
-
+        cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose__cam_M_object')
 
         quat_cam_M_obj = pin.SE3ToXYZQUAT(cam_M_obj)
         quat_cam_M_megapose = pin.SE3ToXYZQUAT(cam_M_megapose)
@@ -75,7 +72,7 @@ class FixedTFBroadcaster:
             self.pub_tf.publish(tfm5)
             #self.pub_tf.publish(tfm6)
 
-def get_pin_SE3(ex_dir, filename, el): #el = 'tf_camera' | 'base_robot' | 'object'
+def get_pin_SE3(ex_dir, filename, el): #el = 'tiago_M_cam' | 'base_robot' | 'object'
     yfile = f"{ex_dir}/{filename}"
     if not os.path.exists(ex_dir):
         print('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')

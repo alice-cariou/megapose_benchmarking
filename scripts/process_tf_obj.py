@@ -29,7 +29,7 @@ def tf(header_frame, child_frame,ex_name):
     euler = rot.as_euler('xyz', degrees=True)
 
     content = {'transformation from mocap to megapose': {'translation': {'x': pos.x,'y': pos.y,'z' : pos.z},'rotation':{'x': float(euler[0]),'y': float(euler[1]),'z': float(euler[2])}}}
-    utils.yaml_manager(ex_name, 'tf_camera', 'results.yaml', content)
+    utils.yaml_manager(ex_name, None, 'results.yaml', content)
 
 def main():
     parser = argparse.ArgumentParser('Results')

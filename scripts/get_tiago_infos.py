@@ -42,7 +42,6 @@ def imgmsg_to_cv2(img_msg):
 
 
 def tf(ex_name):
-    #rospy.init_node('tf2_test_listener')
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
     trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_rgb_frame', rospy.Time(), rospy.Duration(1.0))
@@ -50,8 +49,8 @@ def tf(ex_name):
     pos = trans.transform.translation
     att = trans.transform.rotation
 
-    content = {'tf_camera': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.w,'qx': att.x,'qy': att.y,'qz': att.z}}}
-    utils.yaml_manager(ex_name, 'tf_camera', 'details.yaml', content)
+    content = {'tiago_M_cam': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.w,'qx': att.x,'qy': att.y,'qz': att.z}}}
+    utils.yaml_manager(ex_name, 'tiago_M_cam', 'details.yaml', content)
 
 def main():
     parser = argparse.ArgumentParser('Get object results')
@@ -61,8 +60,6 @@ def main():
     if not args.name:
         print('Please provide an example name : --name <example_name>')
         return
-
-    #tf(args.name)
 
     sub = Robot_Subscriber("image_subscriber", args.name)
 

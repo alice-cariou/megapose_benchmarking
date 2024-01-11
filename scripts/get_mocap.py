@@ -24,7 +24,7 @@ class Subscriber_mocap:
             self.sub1.unregister()
             pos = data.pos[0]
             att = data.att[0]
-            content = {'object': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
+            content = {'mocap_M_object': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
             utils.yaml_manager(self.ex_name, 'object', 'details.yaml', content)
 
     def callback_pos_tiago(self, data):
@@ -33,7 +33,7 @@ class Subscriber_mocap:
             self.sub2.unregister()
             pos = data.pos[0]
             att = data.att[0]
-            content = {'base_robot': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
+            content = {'mocap_M_tiago': {'pos': {'x': pos.x,'y': pos.y,'z' : pos.z},'quaternion':{'qw': att.qw,'qx': att.qx,'qy': att.qy,'qz': att.qz}}}
             utils.yaml_manager(self.ex_name, 'base_robot', 'details.yaml', content)
 
 def listener(ex_name):
