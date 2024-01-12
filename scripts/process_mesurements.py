@@ -63,7 +63,7 @@ class FixedTFBroadcaster:
             tfm3 = create_tfMessage("torso_lift_link", "origin_mocap", quat_torso_lift_link_M_mocap)
             tfm4 = create_tfMessage("torso_lift_link", "cam", quat_torso_lift_link_M_cam)
             tfm5 = create_tfMessage("cam","cam_M_megapose", quat_cam_M_megapose)
-            tfm6 = create_tfMessage("origin_mocap", "test", quat_mocap_M_megapose)
+            #tfm6 = create_tfMessage("origin_mocap", "test", quat_mocap_M_megapose)
 
             self.pub_tf.publish(tfm)
             self.pub_tf.publish(tfm2)
