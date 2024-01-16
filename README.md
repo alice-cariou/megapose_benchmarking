@@ -12,93 +12,127 @@ The benchmarking data is located in the `tiago` directory. Each example subdirec
 - an `object_data.json` file, containing the label and bbox needed for megapose in the right format
 - a `details.yaml` with all the mesurements used
 
-To create new tests, or run megapose on the existing tests, scripts can be found in the `scripts` directory.
-
-The following instructios describe how to use the scripts.
+To create new tests, visualize the results or run megapose on the existing tests, scripts can be found in the `scripts` directory.
+The following instructions describe how to use the scripts.
 
 # Before use
 
-Depending on your goals, you might need to install stuff or configure your environement.
-- megapose relating scripts : you will need megapose, configure the environment.Too obvious ? TODO
-- mocap : might be a few things to configure depending on the computer.If it is the first time you use optitrack, you might need to setup a few things [here](lien?)
-- rviz : link to bottom 
+In order to use some of these scripts, installations or configurations might be necessary.
+- to use megapose relating scripts : [happypose](https://github.com/agimus-project/happypose)
+- to make new mesurements :  [mocap](https://wiki.laas.fr/robots/PR2/Mocap)
+- to visualize results : [rviz](#rviz-configuration)
 
 ## create a test using tiago and the mocap
+
+Note on the following scripts : They were written to be used with python2.7 and ROS1 Melodic.
 
 ### on a computer connected to tiago
 
 To use the following commands, you need to be able to connect to the mocap.
 At the root of the repository :
-`source setup_tiago.sh`  -> will assume you have a ~/openrobots_ws directory
-`optitrack-ros -b`  
-`rosaction call /optitrack/connect '{host: "muybridge", host_port: "1510", mcast: "239.192.168.30", mcast_port: "1511"}'`
+```
+source setup_tiago.sh
+optitrack-ros -b
+rosaction call /optitrack/connect '{host: "muybridge", host_port: "1510", mcast: "239.192.168.30", mcast_port: "1511"}'
+```
+You should then have access to the topics published by tiago, as well as the optitrack topics.
+Everything is ready to make mesurements.
 
-You can now get all the necessary mesurements.
+### tiago and object position in mocap
 
-### tiago position in the mocap frame
-TODO: choose the best scripts
-To make the following steps easier, the position detected, tiago_smth, corresponds to torso_lift_link in the robot model, on top of the robot.
+To make the following step easier, the position used to detect tiago's position corresponds to torso_lift_link in the robot model, on top of the robot, and is called tiago_torso_lift_link.
+
+In addition, to detect the position of the object without modifying their apparence, plank_gepetto was used, it is a plexiglas plank with mocap captors on it.
+
+The following script will get the position and the rotation of tiago_torso_lift_link and plank_gepetto and store it in the corresponding details.yaml file.
+
 `./get_mocap.py --name <example_name>`
 
-### object position in the mocap frame
+### tiago image and camera position
 
-To obtain the object position without modifying its appearance, i created plank_gepetto, which TODO
-`./get_tless.py --name <example_name>`
+To get the image and the transform from torso_lift_link to the camera :
 
-### 
-
-You should now have access to the topics regarding tiago.  
-You can now get the image and the position of the camera with:  
 `./get_tiago_infos.py --name <example_name>`
-
 
 ## using megapose
 
-To test a new example with megapose, you will need to :  
+Note on the following scripts : the were written for python3.
 
-Create an inputs file for megapose, with the name of the example directory, the name of the object, and the coordinates of the bounding box around the object to detect. (temporary solution hopefully)
-`./screate_inputs_file.py --name <example_name> --object <object_name> x1 y1 x2 y2`  
-an example of use for this script would be :  
-`./screate_inputs_file.py --name 004 --object tless23 300 286 425 336`
+### create the input file an example
 
-Create the megapose example using the informations you have in this directory :  
-`./create_megapose_example.py --name <example_name>`
-This will create the example in the datadir you chose for happypose, ready to be used by happypose.
+For a new megapose example, two things are necessary :
+- an image
+- an input file
 
-You can now run megapose on this new example using :  
-`python -m happypose.pose_estimators.megapose.scripts.run_inference_on_example <example_name> --run-inference --vis-outputs`  
-If you are not familiar with happypose, you might need to check its repository to configure your environment correctly : [happypose](https://github.com/agimus-project/happypose)
+An input file can be created with the name of the example directory, the name of the object, and the coordinates of the bounding box around the object to detect.
 
-After that, you should be able to access the outputs of megapose for this example with :  
+`./megapose_create_inputs_file.py --name <example_name> --object <object_name> x1 y1 x2 y2`
+
+an example of use of this script would be :
+
+`./megapose_create_inputs_file.py --name 004 --object tless23 300 286 425 336`
+
+This will create an `object_data.json` file with the format megapose expects is to have.
+
+### craete a megapose example
+
+A megapose example can be created using the informations you have in any `tiago` subdirectory :
+
+`./megapose_create_example.py --name <example_name>`
+
+This will create the example in the datadir you chose for happypose, ready to be used.
+
+### running megapose
+
+Megapose can now be run on this new example using :
+
+`python -m happypose.pose_estimators.megapose.scripts.run_inference_on_example <example_name> --run-inference --vis-outputs`
+
+### megapose outputs
+  
+After that, the outputs of megapose will be accessible with :
+
 `./get_outputs_megapose.py --name <example_name>`
+
 This will add megapose informations in the details.yaml of your example directory.
+  
 
 ## comparing the results
 
-To visualize the results with rviz and calculate the things:
-first -> check link to install rviz
+## visualizing the results
 
-`./process_mesurements.py --name <example_name>`
-This will show the robot and the object from the mocap, and the megapose results
-
-In another window:
-`./process_tf_obj --name <example_name>`
-This will calculate the transform between what was detected by megapose and the "truth" (mocap), and write in the results.yaml file of your example directory.
-
-Finally, if you added a new example and want it to be taken into consideration in the all_results.yaml file, you can run:
-`./process_results`
-
-## rviz
-
-The installation is detailled [here](http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/InstallUbuntuAndROS)
-You should then have created a workspace (named tiago_public_ws if you kept the name from the tutorial)
-
-copy ac_show.launch file in your tiago_public_ws/src/tiago_robot/tiago_description/robots/ directory
-
-then, each time you need to use it :
+To visualize the results with rviz and calculate the transformation from one to the other, rviz can be used.
+```
 source tiago_public_ws/devel/setup.bach
 roslaunch tiago_description ac_show.launch
+```
+Then, the results can be visualized with :
+`./process_mesurements.py --name <example_name>`
 
-note : python2 : 'y'
-+ note : ros1 melodic et python 2.7
-+ explanations plank_gepetto
+## calculating the transform between megapose and mocap
+
+In another window:
+
+`./process_tf_obj --name <example_name>`
+
+This will calculate the transform between what was detected by megapose and the "truth" (mocap), and write in the results.yaml file of your example directory.
+
+## get updated general results
+
+Finally, if a new example was added, it can be taken into consideration in the all_results.yaml file :
+
+`./process_results`
+
+# rviz configuration
+
+The installation is detailled [here](http://wiki.ros.org/Robots/TIAGo/Tutorials/Installation/InstallUbuntuAndROS)
+
+A new workspace should then have been created (named tiago_public_ws in the tutorial)
+
+You can now copy the `tiago/ac_show.launch` file in your `tiago_public_ws/src/tiago_robot/tiago_description/robots/` directory
+
+then, each time you need to use it :
+```
+source tiago_public_ws/devel/setup.bach
+roslaunch tiago_description ac_show.launch
+```

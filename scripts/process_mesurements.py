@@ -17,43 +17,33 @@ class FixedTFBroadcaster:
         self.transform_array = []
         ex_dir = os.path.dirname(__file__)+"/../tiago/"+name
 
-
         from_megapose_to_tf = pin.SE3(np.array([[0,0,1],[0,-1,0],[1,0,0]]),np.array([0,0,0]))
-        aled = pin.SE3(np.array([[0,-1,0],[1,0,0],[0,0,1]]),np.array([0,0,0]))
 
-
+        #cam_M_torso_lift_link
         torso_lift_link_M_cam = get_pin_SE3(ex_dir, 'details.yaml', 'tiago_M_cam')
-
         quat_torso_lift_link_M_cam = pin.SE3ToXYZQUAT(torso_lift_link_M_cam)
         cam_M_torso_lift_link = torso_lift_link_M_cam.inverse()
 
+        #torso_lift_link_M_mocap
         mocap_M_torso_lift_link = get_pin_SE3(ex_dir, 'details.yaml', 'mocap_M_tiago')
         torso_lift_link_M_mocap = mocap_M_torso_lift_link.inverse()
 
+        #mocap_M_obj
         mocap_M_obj = get_pin_SE3(ex_dir, 'details.yaml', 'mocap_M_object')
+        quat_mocap_M_obj = pin.SE3ToXYZQUAT(mocap_M_obj)
 
+        #cam_M_obj
         cam_M_obj = cam_M_torso_lift_link*torso_lift_link_M_mocap*mocap_M_obj
-
-        cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose__cam_M_object')
-
         quat_cam_M_obj = pin.SE3ToXYZQUAT(cam_M_obj)
+
+        #cam_M_megapose
+        cam_M_megapose = from_megapose_to_tf*get_pin_SE3(ex_dir, f'details.yaml', 'megapose__cam_M_object')
         quat_cam_M_megapose = pin.SE3ToXYZQUAT(cam_M_megapose)
 
+        #mocap_M_torso_lift_link
         torso_lift_link_M_mocap = mocap_M_torso_lift_link.inverse()
         quat_torso_lift_link_M_mocap = pin.SE3ToXYZQUAT(torso_lift_link_M_mocap)
-        quat_mocap_M_obj = pin.SE3ToXYZQUAT(mocap_M_obj)
         quat_mocap_M_torso = pin.SE3ToXYZQUAT(mocap_M_torso_lift_link)
-
-        obj_M_megapose = cam_M_obj.inverse()*(from_megapose_to_tf.inverse()*cam_M_megapose)
-        quat_obj_M_megapose = pin.SE3ToXYZQUAT(obj_M_megapose)
-
-        mocap_M_cam = mocap_M_torso_lift_link*torso_lift_link_M_cam
-        quat_mocap_M_cam = pin.SE3ToXYZQUAT(mocap_M_cam)
-
-        mocap_M_megapose = mocap_M_torso_lift_link*(torso_lift_link_M_cam)
-        quat_mocap_M_megapose = pin.SE3ToXYZQUAT(mocap_M_megapose)
-
-        print(quat_cam_M_obj,quat_cam_M_megapose)
 
         while not rospy.is_shutdown():
             rospy.sleep(0.1)
@@ -63,14 +53,12 @@ class FixedTFBroadcaster:
             tfm3 = create_tfMessage("torso_lift_link", "origin_mocap", quat_torso_lift_link_M_mocap)
             tfm4 = create_tfMessage("torso_lift_link", "cam", quat_torso_lift_link_M_cam)
             tfm5 = create_tfMessage("cam","cam_M_megapose", quat_cam_M_megapose)
-            #tfm6 = create_tfMessage("origin_mocap", "test", quat_mocap_M_megapose)
 
             self.pub_tf.publish(tfm)
             self.pub_tf.publish(tfm2)
             #self.pub_tf.publish(tfm3)
             self.pub_tf.publish(tfm4)
             self.pub_tf.publish(tfm5)
-            #self.pub_tf.publish(tfm6)
 
 def get_pin_SE3(ex_dir, filename, el): #el = 'tiago_M_cam' | 'mocap_M_tiago' | 'mocap_M_object'
     yfile = f"{ex_dir}/{filename}"
