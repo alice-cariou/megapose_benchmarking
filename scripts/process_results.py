@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import utils
 import yaml
 import os
@@ -30,12 +32,13 @@ def add_result(direct):
         rot = data['transformation from mocap to megapose']['rotation']
         rx, ry, rz = rot['x'], rot['y'], rot['z']
 
-        return (np.array([abs(x), abs(y), abs(z)]), np.array([abs(rx), abs(ry), abs(rz)]),name)
+        return (np.array([abs(x), abs(y), abs(z)]), np.array([abs(rx), abs(ry), abs(rz)]), name)
+    return None
 
-def infos_transform(res,func):
+def infos_transform(res, func):
     """apply func to each of res elements"""
-    new_translation = [func([el[0][0] for el in res]),func([el[0][1] for el in res]),func([el[0][2] for el in res])]
-    new_rotation = [func([el[1][0] for el in res]),func([el[1][1] for el in res]),func([el[1][2] for el in res])]
+    new_translation = [func([el[0][0] for el in res]), func([el[0][1] for el in res]), func([el[0][2] for el in res])]
+    new_rotation = [func([el[1][0] for el in res]), func([el[1][1] for el in res]), func([el[1][2] for el in res])]
     new = (new_translation, new_rotation)
     write_results(new, func.__name__)
     return new
@@ -44,7 +47,7 @@ def find_transform_utile(el):
     return el[0][0]+el[0][1]+el[0][2]
 
 def find_transform(res,func):
-    """find min or max example"""
+    """find func in examples"""
     found = func(find_transform_utile(el) for el in res)
     for i in range(len(res)):
         if find_transform_utile(res[i]) == found:
@@ -79,14 +82,13 @@ def write_results(res, name, i= None):
     
     print('wrote results in all_results.yaml')
 
-
 def main():
-    res = get_results() #res is a tuple2 list of transforms
+    res = get_results() #res is a tuple2 list of transforms + name
 
-    average = infos_transform(res,mean)
-    mediane = infos_transform(res,median)
-    mini,i = find_transform(res,min)
-    maxi,i = find_transform(res,max)
+    average = infos_transform(res, mean)
+    mediane = infos_transform(res, median)
+    mini,i = find_transform(res, min)
+    maxi,i = find_transform(res, max)
 
 if __name__ == '__main__':
     main()

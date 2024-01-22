@@ -74,7 +74,7 @@ an example of use of this script would be :
 
 This will create an `object_data.json` file with the format megapose expects is to have.
 
-### craete a megapose example
+### create a megapose example
 
 A megapose example can be created using the informations you have in any `tiago` subdirectory :
 
