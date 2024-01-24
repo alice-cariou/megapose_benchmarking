@@ -18,6 +18,7 @@ class Robot_Subscriber:
         tf('mocap_M_obj','cam_M_megapose',ex_name)
 
 def tf(header_frame, child_frame,ex_name):
+    '''gets the transform between mocap_M_obj and cam_M_megapose and write it in results.yaml'''
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
     trans = tfBuffer.lookup_transform(header_frame, child_frame, rospy.Time(), rospy.Duration(1.0))

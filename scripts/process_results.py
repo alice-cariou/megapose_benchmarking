@@ -7,6 +7,7 @@ import numpy as np
 from statistics import mean, median
 
 def get_results():
+    '''gathers all results'''
     ex_dir = os.path.dirname(os.path.realpath(__file__))+'/../tiago/'
     if not os.path.exists(ex_dir):
         logger.error('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
@@ -36,7 +37,7 @@ def add_result(direct):
     return None
 
 def infos_transform(res, func):
-    """apply func to each of res elements"""
+    """applies func to each of res elements"""
     new_translation = [func([el[0][0] for el in res]), func([el[0][1] for el in res]), func([el[0][2] for el in res])]
     new_rotation = [func([el[1][0] for el in res]), func([el[1][1] for el in res]), func([el[1][2] for el in res])]
     new = (new_translation, new_rotation)
@@ -47,7 +48,7 @@ def find_transform_utile(el):
     return el[0][0]+el[0][1]+el[0][2]
 
 def find_transform(res,func):
-    """find func in examples"""
+    """finds func in examples"""
     found = func(find_transform_utile(el) for el in res)
     for i in range(len(res)):
         if find_transform_utile(res[i]) == found:
@@ -57,6 +58,7 @@ def find_transform(res,func):
 
 
 def write_results(res, name, i= None):
+    '''writes res in all_results.yaml'''
     optional_content = {} if i == None else {'example_name': i}
     content = {'translation': {'x': float(res[0][0]),'y': float(res[0][1]),'z' : float(res[0][2])},'rotation':{'x': float(res[1][0]),'y': float(res[1][1]),'z': float(res[1][2])}}
     optional_content.update(content)

@@ -13,8 +13,9 @@ logger = logging.getLogger('create_megapose_example')
 logger.setLevel(logging.INFO)
 
 def get_dir(name):
-    #create nexessary dirs
-    frompath = os.path.dirname(os.path.realpath(__file__))+f'/../tiago/{name}'
+    '''creates a megapose example ready to be used from data in the repo'''
+    #creates nexessary dirs
+    frompath = f'{os.path.dirname(os.path.realpath(__file__))}/../tiago/{name}'
     if not os.path.exists(frompath):
         logger.error(f"the {frompath} directory does not exist")
         return
@@ -25,26 +26,26 @@ def get_dir(name):
             logger.error("you need to set your MEGAPOSE_DATA_DIR or HAPPYPOSE_DATA_DIR environment variable")
             return
 
-    expath = datadir + '/examples/' + name
+    expath = f'{datadir}/examples/{name}'
 
     Path(expath).mkdir(parents=True,exist_ok=True)
-    Path(expath + "/inputs").mkdir(exist_ok=True)
-    Path(expath + "/meshes").mkdir(exist_ok=True)
+    Path(f"{expath}/inputs").mkdir(exist_ok=True)
+    Path(f"{expath}/meshes").mkdir(exist_ok=True)
 
-    #create necessary files
-    if not os.path.exists(frompath+"/../camera_data.json"):
-        logger.error("missing data file at "+frompath+"/../camera_data.json")
+    #creates necessary files
+    if not os.path.exists(f"{frompath}/../camera_data.json"):
+        logger.error(f"missing data file at {frompath}/../camera_data.json")
         return
-    if not os.path.exists(frompath+"/object_data.json"):
-        logger.error("missing data file at "+frompath+"/object_data.json")
+    if not os.path.exists(f"{frompath}/object_data.json"):
+        logger.error(f"missing data file at {frompath}/object_data.json")
         return
     
-    shutil.copy(frompath+"/../camera_data.json", expath+"/camera_data.json")
-    shutil.copy(frompath+"/object_data.json", expath+"/inputs/object_data.json")
+    shutil.copy(f"{frompath}/../camera_data.json", f"{expath}/camera_data.json")
+    shutil.copy(f"{frompath}/object_data.json", f"{expath}/inputs/object_data.json")
 
 
-    #get label
-    with open(frompath+"/object_data.json", 'r') as f:
+    #gets the label of the object 
+    with open(f"{frompath}/object_data.json", 'r') as f:
         res = f.read()
     if not res :
         logger.error(f'Error while reading {frompath}/obj_data.json')
@@ -54,6 +55,7 @@ def get_dir(name):
     label = res['label']
     obj = label[-2:]
 
+    #gets the right mesh according to the label
     Path(f"{expath}/meshes/{label}").mkdir(exist_ok=True)
     meshpath = f"{datadir}/bop_datasets/tless/models"
     if not os.path.exists(meshpath):
@@ -64,11 +66,11 @@ def get_dir(name):
         return
     shutil.copy(f'{meshpath}/obj_0000{obj}.ply', f'{expath}/meshes/{label}')
 
-    #copy image
-    if not os.path.exists(frompath+"/image_rgb.png"):
+    #copies image
+    if not os.path.exists(f"{frompath}/image_rgb.png"):
         logger.error("missing image")
         return
-    shutil.copy(frompath+"/image_rgb.png", expath+"/image_rgb.png")
+    shutil.copy(f"{frompath}/image_rgb.png", f"{expath}/image_rgb.png")
 
     logger.info(f'created example at {expath}')
 

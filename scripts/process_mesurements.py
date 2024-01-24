@@ -11,7 +11,7 @@ import math
 import argparse
 
 class FixedTFBroadcaster:
-
+    '''gets mesurements in details.yaml and broadcasts them'''
     def __init__(self, name):
         self.pub_tf = rospy.Publisher("/tf", tf2_msgs.msg.TFMessage, queue_size=10)
         self.transform_array = []
@@ -61,6 +61,7 @@ class FixedTFBroadcaster:
             self.pub_tf.publish(tfm5)
 
 def get_pin_SE3(ex_dir, filename, el): #el = 'tiago_M_cam' | 'mocap_M_tiago' | 'mocap_M_object'
+    '''creates a pin.SE3 from mesurements in details.yaml'''
     yfile = f"{ex_dir}/{filename}"
     if not os.path.exists(ex_dir):
         print('Make sure the example you asked for exists in the tiago directory, and that the .yaml has the right name')
@@ -77,7 +78,7 @@ def get_pin_SE3(ex_dir, filename, el): #el = 'tiago_M_cam' | 'mocap_M_tiago' | '
     quaternion = np.array([qw, qx, qy, qz])
     return pin.SE3(pin.Quaternion(quaternion), position)
 
-def create_tfMessage(header_frame, child_frame, transform):
+def create_tfMessage(header_frame, child_frame, transform): #transform is a pin.SE3ToXYZQUAT
     t = geometry_msgs.msg.TransformStamped()
     t.header.frame_id = header_frame
     t.header.stamp = rospy.Time.now()

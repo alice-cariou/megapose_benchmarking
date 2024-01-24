@@ -4,6 +4,7 @@ import os
 import yaml
 
 def yaml_manager(ex_name, key_name, filename, content):
+    '''is used to write {content} in {filename}'''
     yml_path = os.path.dirname(os.path.realpath(__file__))+'/../tiago/'+ex_name
     if not os.path.exists(yml_path):
         os.makedirs(yml_path)

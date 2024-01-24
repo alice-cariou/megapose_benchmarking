@@ -11,6 +11,7 @@ import yaml
 import argparse
 
 class Subscriber_mocap:
+    '''subscriber which gets the position of tiago_torso_lift_link and plank_gepetto, and store them in details.yaml'''
     def __init__(self, name, ex_name):
         rospy.init_node(name)
         self.ex_name = ex_name
@@ -41,7 +42,7 @@ def listener(ex_name):
     rospy.spin()
 
 def main():
-    parser = argparse.ArgumentParser('Get object results')
+    parser = argparse.ArgumentParser('Get mocap mesurements')
     parser.add_argument('--name', type=str)
 
     args = parser.parse_args()

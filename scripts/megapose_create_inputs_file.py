@@ -4,6 +4,7 @@ import os
 import argparse
 
 def main():
+    '''creates the object_data.json file with expected format for megapose'''
     parser = argparse.ArgumentParser('Get megapose results')
     parser.add_argument('--name', type=str, help="name of the example dir")
     parser.add_argument('--object', type=str, help="name of the object to detect")

@@ -17,6 +17,7 @@ import numpy as np
 import sys
 
 class Robot_Subscriber:
+    '''subscriber which gets the image seen by Tiago, and store them in the {ex_name} directory'''
     def __init__(self, name, ex_name):
         bridge = CvBridge()
         rospy.init_node(name, anonymous=True)
@@ -42,6 +43,7 @@ def imgmsg_to_cv2(img_msg):
 
 
 def tf(ex_name):
+    '''gets the tf transformation from torso_lift_link to the rgb camera (xtion_rgb_frame), store it in details.yaml'''
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
     trans = tfBuffer.lookup_transform('torso_lift_link', 'xtion_rgb_frame', rospy.Time(), rospy.Duration(1.0))
